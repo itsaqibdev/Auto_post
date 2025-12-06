@@ -1,0 +1,7 @@
+__pycache__
+*.pyc
+.env
+.env.local
+news_image.png
+posted_news.json
+test.html

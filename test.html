@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<title>Perfect News Card</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<style>
+    body {
+        background: #000;
+        display: flex;
+        justify-content: center;
+        padding: 40px;
+        font-family: Arial, sans-serif;
+    }
+
+    #card {
+        position: relative;
+        width: 380px;
+        border-radius: 14px;
+        overflow: hidden;
+        background: #000;
+    }
+
+    /* Image stays original aspect ratio */
+    #newsImage {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+
+    /* Fade + text box at bottom */
+    #bottomOverlay {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        padding: 18px;     /* margin from all sides for text */
+        box-sizing: border-box;
+
+        background: linear-gradient(
+            rgba(0,0,0,0) 0%,
+            rgba(0,0,0,0.7) 40%,
+            rgba(0,0,0,1) 100%
+        );
+    }
+
+    #titleText {
+        color: white;
+        font-size: 18px;
+        font-weight: bold;
+        line-height: 1.4;
+        word-wrap: break-word;
+    }
+
+    .green {
+        color: #00ff55;
+        font-weight: 900;
+    }
+
+    .saveBtn {
+        width: 380px;
+        margin-top: 20px;
+        padding: 12px;
+        border: none;
+        border-radius: 8px;
+        font-size: 18px;
+        font-weight: bold;
+        background: #00ff66;
+        cursor: pointer;
+    }
+</style>
+
+</head>
+
+<body>
+
+<div>
+
+    <div id="card">
+        <img id="newsImage">
+
+        <div id="bottomOverlay">
+            <div id="titleText">Loading...</div>
+        </div>
+    </div>
+
+    <button class="saveBtn" onclick="saveCard()">Download</button>
+
+</div>
+
+
+<script>
+const API_URL = "https://api.thenewsapi.com/v1/news/top?api_token=AtGtNvdFrbw23f7wJkg6lRDuzmwwt2WX9JAYXc7d&locale=pk&limit=3";
+
+function colorRandomWords(text) {
+    const words = text.split(" ");
+    for (let i = 0; i < 3; i++) {
+        let index = Math.floor(Math.random() * words.length);
+        if (words[index].length > 5) {
+            words[index] = `<span class="green">${words[index]}</span>`;
+        }
+    }
+    return words.join(" ");
+}
+
+async function loadNews() {
+    const res = await fetch(API_URL);
+    const data = await res.json();
+    const article = data.data[0];
+
+    const imgURL = "https://corsproxy.io/?" + encodeURIComponent(article.image_url);
+
+    document.getElementById("newsImage").src = imgURL;
+    document.getElementById("titleText").innerHTML = colorRandomWords(article.title);
+}
+
+function saveCard() {
+    html2canvas(document.querySelector("#card"), {
+        allowTaint: false,
+        useCORS: true,
+        scale: 2
+    }).then(canvas => {
+        const link = document.createElement("a");
+        link.download = "news_card.png";
+        link.href = canvas.toDataURL();
+        link.click();
+    });
+}
+
+loadNews();
+</script>
+
+</body>
+</html>

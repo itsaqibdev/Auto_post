@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News Card API - Admin Panel</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+        }
+
+        .card h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 20px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            color: #555;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-right: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .status {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .status.configured {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status.not-configured {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .help-text {
+            font-size: 12px;
+            color: #888;
+            margin-top: 5px;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .alert-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .action-buttons {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid #f0f0f0;
+        }
+
+        .test-result {
+            margin-top: 10px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            font-size: 13px;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📰 News Card API</h1>
+            <p class="subtitle">Admin Panel - Manage API Settings</p>
+        </div>
+
+        <div id="alertContainer"></div>
+
+        <!-- News API Settings -->
+        <div class="card">
+            <h2>🔗 News API Configuration</h2>
+            <div class="form-group">
+                <label for="newsApiUrl">News API URL</label>
+                <textarea id="newsApiUrl" rows="2" placeholder="https://api.thenewsapi.com/v1/news/top?api_token=..."></textarea>
+                <div class="help-text">Enter the complete News API URL with token and parameters</div>
+            </div>
+            <button class="btn btn-success" onclick="saveNewsApi()">💾 Save News API</button>
+            <button class="btn btn-info" onclick="testNewsApi()">🧪 Test Connection</button>
+            <div id="newsTestResult" class="test-result hidden"></div>
+        </div>
+
+        <!-- Instagram API Settings -->
+        <div class="card">
+            <h2>📸 Instagram API Configuration <span id="instaStatus" class="status"></span></h2>
+            
+            <div class="form-group">
+                <label for="instaToken">Instagram Access Token</label>
+                <input type="password" id="instaToken" placeholder="Enter your Instagram access token">
+                <div class="help-text">Get this from Facebook Developer Console - <a href="/get-token" target="_blank" style="color: #667eea;">Need help? Click here</a></div>
+            </div>
+
+            <div class="form-group">
+                <label for="instaAccountId">Instagram Business Account ID</label>
+                <input type="text" id="instaAccountId" placeholder="Enter your Instagram Business Account ID">
+                <div class="help-text">Your Instagram business account identifier</div>
+            </div>
+
+            <button class="btn btn-success" onclick="saveInstagramApi()">💾 Save Instagram API</button>
+            <button class="btn btn-info" onclick="checkInstagramStatus()">🔍 Check Status</button>
+            <button class="btn btn-secondary" onclick="findInstagramAccount()">🔍 Find My Account ID</button>
+            <div id="instaTestResult" class="test-result hidden"></div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="card">
+            <h2>⚡ Quick Actions</h2>
+            
+            <div class="action-buttons">
+                <button class="btn btn-success" onclick="generateCard()">🎨 Generate News Card</button>
+                <button class="btn btn-info" onclick="postToInstagram()">📤 Post to Instagram</button>
+                <button class="btn btn-danger" onclick="clearPostedHistory()">🗑️ Clear Posted History</button>
+            </div>
+            
+            <div id="actionResult" class="test-result hidden"></div>
+        </div>
+
+        <!-- Documentation Links -->
+        <div class="card">
+            <h2>📚 Documentation</h2>
+            <p style="color: #666; margin-bottom: 15px;">Quick links to setup guides:</p>
+            <button class="btn" onclick="window.open('/get-token', '_blank')">🔑 Get Access Token</button>
+            <button class="btn" onclick="window.open('INSTAGRAM_SETUP.md', '_blank')">📖 Instagram Setup Guide</button>
+            <button class="btn" onclick="window.open('DEPLOYMENT.md', '_blank')">🚀 Deployment Guide</button>
+            <button class="btn" onclick="window.open('FEATURES.md', '_blank')">✨ Features List</button>
+            <button class="btn" onclick="window.open('/privacy', '_blank')">🔒 Privacy Policy</button>
+        </div>
+    </div>
+
+    <footer style="text-align: center; margin-top: 30px; padding: 20px; color: white;">
+        <p>News Bot API © 2024 | <a href="/privacy" style="color: white; text-decoration: underline;">Privacy Policy</a></p>
+    </footer>
+
+    <script>
+        const API_BASE = window.location.origin;
+
+        function showAlert(message, type = 'success') {
+            const alertContainer = document.getElementById('alertContainer');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            alertContainer.innerHTML = '';
+            alertContainer.appendChild(alert);
+            setTimeout(() => alert.remove(), 5000);
+        }
+
+        function showResult(elementId, message, isSuccess = true) {
+            const element = document.getElementById(elementId);
+            element.className = `test-result ${isSuccess ? 'alert-success' : 'alert-error'}`;
+            element.textContent = message;
+            element.classList.remove('hidden');
+        }
+
+        // Load current settings
+        async function loadSettings() {
+            try {
+                // Load configuration from config.json
+                const configResponse = await fetch(`${API_BASE}/api/admin/config`);
+                if (configResponse.ok) {
+                    const configData = await configResponse.json();
+                    if (configData.success && configData.config) {
+                        // Pre-fill News API URL if exists
+                        if (configData.config.news_api_url) {
+                            document.getElementById('newsApiUrl').value = configData.config.news_api_url;
+                        }
+                    }
+                }
+                
+                // Check Instagram status
+                const response = await fetch(`${API_BASE}/api/instagram/status`);
+                const data = await response.json();
+                
+                const statusEl = document.getElementById('instaStatus');
+                if (data.configured) {
+                    statusEl.textContent = '✓ Configured';
+                    statusEl.className = 'status configured';
+                } else {
+                    statusEl.textContent = '✗ Not Configured';
+                    statusEl.className = 'status not-configured';
+                }
+            } catch (error) {
+                console.error('Error loading settings:', error);
+            }
+        }
+
+        async function saveNewsApi() {
+            const url = document.getElementById('newsApiUrl').value.trim();
+            if (!url) {
+                showAlert('Please enter a News API URL', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/api/admin/update-news-api`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ api_url: url })
+                });
+
+                if (response.ok) {
+                    showAlert('News API URL saved successfully!', 'success');
+                } else {
+                    showAlert('Failed to save News API URL', 'error');
+                }
+            } catch (error) {
+                showAlert('Error saving News API URL: ' + error.message, 'error');
+            }
+        }
+
+        async function testNewsApi() {
+            const url = document.getElementById('newsApiUrl').value.trim();
+            if (!url) {
+                showAlert('Please enter a News API URL first', 'error');
+                return;
+            }
+
+            showResult('newsTestResult', '⏳ Testing connection...', true);
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data.data && data.data.length > 0) {
+                    showResult('newsTestResult', `✅ Connection successful! Found ${data.data.length} articles. Latest: "${data.data[0].title}"`, true);
+                } else {
+                    showResult('newsTestResult', '⚠️ Connected but no data found', false);
+                }
+            } catch (error) {
+                showResult('newsTestResult', `❌ Connection failed: ${error.message}`, false);
+            }
+        }
+
+        async function saveInstagramApi() {
+            const token = document.getElementById('instaToken').value.trim();
+            const accountId = document.getElementById('instaAccountId').value.trim();
+
+            if (!token || !accountId) {
+                showAlert('Please fill in both Instagram fields', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/api/admin/update-instagram`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        access_token: token,
+                        account_id: accountId
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    if (data.warning) {
+                        showAlert(data.message + ' ⚠️ ' + data.warning, 'success');
+                        if (data.note) {
+                            showResult('instaTestResult', '💡 ' + data.note, false);
+                        }
+                    } else {
+                        showAlert('Instagram credentials saved successfully!', 'success');
+                    }
+                    loadSettings();
+                } else {
+                    showAlert('Failed to save Instagram credentials: ' + (data.error || 'Unknown error'), 'error');
+                }
+            } catch (error) {
+                showAlert('Error saving Instagram credentials: ' + error.message, 'error');
+            }
+        }
+
+        async function checkInstagramStatus() {
+            showResult('instaTestResult', '⏳ Testing Instagram API...', true);
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/instagram/test`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    showResult('instaTestResult', `✅ Instagram API works! Account: @${data.account_info.username || 'Unknown'} - Container ID: ${data.container_id}`, true);
+                } else {
+                    const errorMsg = data.error?.message || data.details?.message || data.message || JSON.stringify(data.error);
+                    showResult('instaTestResult', `❌ Error: ${errorMsg}`, false);
+                }
+                loadSettings();
+            } catch (error) {
+                showResult('instaTestResult', `❌ Error: ${error.message}`, false);
+            }
+        }
+
+        async function findInstagramAccount() {
+            const token = document.getElementById('instaToken').value.trim();
+            
+            if (!token) {
+                showAlert('Please enter your Access Token first', 'error');
+                return;
+            }
+
+            showResult('instaTestResult', '⏳ Finding your Instagram Business Account...', true);
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/instagram/find-account`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ access_token: token })
+                });
+                const data = await response.json();
+                
+                if (data.success && data.accounts && data.accounts.length > 0) {
+                    const account = data.accounts[0];
+                    document.getElementById('instaAccountId').value = account.instagram_account_id;
+                    
+                    let message = `✅ Found account: @${account.instagram_username} (${account.instagram_name})\n`;
+                    message += `Facebook Page: ${account.facebook_page_name}\n`;
+                    message += `Account ID: ${account.instagram_account_id}\n`;
+                    message += `\n✅ Account ID has been filled in above. Click "Save Instagram API" to save it!`;
+                    
+                    if (data.accounts.length > 1) {
+                        message += `\n\nNote: ${data.accounts.length} accounts found. Using the first one.`;
+                    }
+                    
+                    showResult('instaTestResult', message, true);
+                    showAlert('Account ID auto-filled! Click Save to complete setup.', 'success');
+                } else {
+                    const errorMsg = data.message || data.error || 'No Instagram Business Account found';
+                    let helpMsg = `❌ ${errorMsg}`;
+                    
+                    if (data.help) {
+                        helpMsg += `\n\n💡 ${data.help}`;
+                    }
+                    
+                    if (data.pages_found && data.pages_found.length > 0) {
+                        helpMsg += `\n\nFacebook Pages found: ${data.pages_found.map(p => p.name).join(', ')}`;
+                    }
+                    
+                    showResult('instaTestResult', helpMsg, false);
+                }
+            } catch (error) {
+                showResult('instaTestResult', `❌ Error: ${error.message}`, false);
+            }
+        }
+
+        async function generateCard() {
+            showResult('actionResult', '⏳ Generating news card...', true);
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/news-card`);
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'news_card.png';
+                    a.click();
+                    showResult('actionResult', '✅ News card generated and downloaded!', true);
+                } else {
+                    showResult('actionResult', '❌ Failed to generate news card', false);
+                }
+            } catch (error) {
+                showResult('actionResult', `❌ Error: ${error.message}`, false);
+            }
+        }
+
+        async function postToInstagram() {
+            showResult('actionResult', '⏳ Posting to Instagram... (this may take 10-15 seconds)', true);
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/post-to-instagram`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showResult('actionResult', `✅ Successfully posted to Instagram! Post ID: ${data.post_id}`, true);
+                } else {
+                    showResult('actionResult', `❌ Failed: ${data.error || data.message}`, false);
+                }
+            } catch (error) {
+                showResult('actionResult', `❌ Error: ${error.message}`, false);
+            }
+        }
+
+        async function clearPostedHistory() {
+            if (!confirm('Are you sure you want to clear the posted news history? This will allow reposting of previously posted articles.')) {
+                return;
+            }
+
+            showResult('actionResult', '⏳ Clearing history...', true);
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/admin/clear-history`, {
+                    method: 'POST'
+                });
+                
+                if (response.ok) {
+                    showResult('actionResult', '✅ Posted news history cleared!', true);
+                } else {
+                    showResult('actionResult', '❌ Failed to clear history', false);
+                }
+            } catch (error) {
+                showResult('actionResult', `❌ Error: ${error.message}`, false);
+            }
+        }
+
+        // Load settings on page load
+        loadSettings();
+    </script>
+</body>
+</html>

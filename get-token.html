@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get Instagram Access Token - News Bot</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            color: #764ba2;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+
+        .step {
+            background: #f0f4ff;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .step-number {
+            background: #667eea;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .code-block {
+            background: #2d3748;
+            color: #00ff00;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+            word-break: break-all;
+        }
+
+        .warning {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .success {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        a.btn {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 12px 30px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 10px 5px;
+            transition: background 0.3s;
+        }
+
+        a.btn:hover {
+            background: #764ba2;
+        }
+
+        ul {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        li {
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+
+        .back-link {
+            margin-top: 30px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔑 How to Get Instagram Access Token</h1>
+        
+        <div class="warning">
+            <strong>⚠️ Current Issue:</strong> Your access token doesn't have permission to access Facebook Pages, or your Instagram isn't connected to a Facebook Page.
+        </div>
+
+        <h2>Method 1: Using Facebook Graph API Explorer (Recommended)</h2>
+
+        <div class="step">
+            <span class="step-number">Step 1</span>
+            <h3>Go to Facebook Developers</h3>
+            <p>Open the Graph API Explorer:</p>
+            <a href="https://developers.facebook.com/tools/explorer/" target="_blank" class="btn">📱 Open Graph API Explorer</a>
+        </div>
+
+        <div class="step">
+            <span class="step-number">Step 2</span>
+            <h3>Select Your App</h3>
+            <ul>
+                <li>In the top dropdown, select your Facebook App (or create one)</li>
+                <li>Make sure you're using <strong>User Token</strong> (not App Token)</li>
+            </ul>
+        </div>
+
+        <div class="step">
+            <span class="step-number">Step 3</span>
+            <h3>Add Required Permissions</h3>
+            <p>Click <strong>"Add a Permission"</strong> and enable these:</p>
+            <ul>
+                <li><code>pages_show_list</code> - View your Facebook Pages</li>
+                <li><code>pages_read_engagement</code> - Read page data</li>
+                <li><code>instagram_basic</code> - Access Instagram account</li>
+                <li><code>instagram_content_publish</code> - Post to Instagram</li>
+                <li><code>business_management</code> - Manage business assets</li>
+            </ul>
+        </div>
+
+        <div class="step">
+            <span class="step-number">Step 4</span>
+            <h3>Generate Token</h3>
+            <ul>
+                <li>Click <strong>"Generate Access Token"</strong></li>
+                <li>Log in with Facebook and approve all permissions</li>
+                <li>Copy the access token that appears</li>
+            </ul>
+            <div class="warning">
+                <strong>Note:</strong> This is a short-lived token (expires in 1 hour). See Method 2 to get a long-lived token.
+            </div>
+        </div>
+
+        <div class="step">
+            <span class="step-number">Step 5</span>
+            <h3>Test in Admin Panel</h3>
+            <ul>
+                <li>Go to the Admin Panel</li>
+                <li>Paste the token in Instagram Access Token field</li>
+                <li>Click <strong>"🔍 Find My Account ID"</strong></li>
+                <li>It will automatically find and fill your Instagram Business Account ID</li>
+            </ul>
+        </div>
+
+        <h2>Method 2: Get Long-Lived Token (60 days)</h2>
+
+        <div class="step">
+            <span class="step-number">Step 1</span>
+            <h3>Get App Credentials</h3>
+            <p>Go to your Facebook App settings:</p>
+            <a href="https://developers.facebook.com/apps/" target="_blank" class="btn">🔧 Facebook Apps</a>
+            <ul>
+                <li>Click your app</li>
+                <li>Go to <strong>Settings > Basic</strong></li>
+                <li>Copy <strong>App ID</strong> and <strong>App Secret</strong></li>
+            </ul>
+        </div>
+
+        <div class="step">
+            <span class="step-number">Step 2</span>
+            <h3>Exchange Short Token for Long Token</h3>
+            <p>Use this URL (replace YOUR_APP_ID, YOUR_APP_SECRET, and SHORT_TOKEN):</p>
+            <div class="code-block">
+https://graph.facebook.com/v18.0/oauth/access_token?grant_type=fb_exchange_token&client_id=YOUR_APP_ID&client_secret=YOUR_APP_SECRET&fb_exchange_token=SHORT_TOKEN
+            </div>
+            <p>Open this URL in your browser - you'll get a long-lived token that lasts 60 days.</p>
+        </div>
+
+        <h2>Method 3: Check Instagram-Facebook Connection</h2>
+
+        <div class="step">
+            <span class="step-number">Step 1</span>
+            <h3>Verify Instagram is Business Account</h3>
+            <ul>
+                <li>Open Instagram app</li>
+                <li>Go to <strong>Settings > Account</strong></li>
+                <li>Should show <strong>"Business"</strong> or <strong>"Creator"</strong></li>
+                <li>If not, tap <strong>"Switch to Professional Account"</strong></li>
+            </ul>
+        </div>
+
+        <div class="step">
+            <span class="step-number">Step 2</span>
+            <h3>Connect to Facebook Page</h3>
+            <ul>
+                <li>Go to Facebook Page (create one if you don't have)</li>
+                <li>Click <strong>Settings</strong></li>
+                <li>Click <strong>Instagram</strong> in left sidebar</li>
+                <li>Click <strong>Connect Account</strong></li>
+                <li>Log in to Instagram and authorize</li>
+            </ul>
+        </div>
+
+        <div class="success">
+            <strong>✅ After Connecting:</strong> Go back to the Admin Panel and click "Find My Account ID" - it should now work!
+        </div>
+
+        <h2>Quick Checklist</h2>
+        <ul>
+            <li>✅ Instagram account is Business/Creator account</li>
+            <li>✅ Instagram is connected to a Facebook Page</li>
+            <li>✅ You are admin of the Facebook Page</li>
+            <li>✅ Access token has required permissions (pages_show_list, instagram_basic, etc.)</li>
+            <li>✅ Facebook App is in Development or Live mode</li>
+        </ul>
+
+        <div class="back-link">
+            <a href="/admin" class="btn">← Back to Admin Panel</a>
+            <a href="https://developers.facebook.com/tools/explorer/" target="_blank" class="btn">Open Graph API Explorer</a>
+        </div>
+    </div>
+</body>
+</html>
