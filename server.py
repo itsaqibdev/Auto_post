@@ -461,7 +461,7 @@ def generate_news_card():
             lines.append(' '.join(current_line))
         
         # Calculate text position
-        line_height = 80  # Reduced from 130 for tighter spacing
+        line_height = 80  # Spacing between lines
         text_height = len(lines) * line_height
         y = card_height - text_height - 30
         
